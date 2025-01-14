@@ -43,7 +43,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
         }
 
         if (node.type === "html") {
-          const tagName = node.value.match(/<(\w+)/)?.[1];
+          const tagName = node.value.match(/<(\w+)/i)?.[1]?.toLowerCase();
           if (!tagName || !TAG_ATTRIBUTES[tagName]) return;
 
           for (const attr of TAG_ATTRIBUTES[tagName]) {
