@@ -18,7 +18,7 @@ const TAG_ATTRIBUTES: Record<string, string[]> = {
 };
 
 function isURL(url: string): boolean {
-  return /^https?:|mailto:|tel:|ftp:/i.test(url);
+  return /^(https?:|mailto:|tel:|ftp:)/i.test(url);
 }
 
 const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
