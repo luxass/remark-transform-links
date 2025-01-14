@@ -47,7 +47,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
           if (!tagName || !TAG_ATTRIBUTES[tagName]) return;
 
           for (const attr of TAG_ATTRIBUTES[tagName]) {
-            const regex = new RegExp(`${attr}=(["'])([^"']+)\\1`, "i");
+            const regex = new RegExp(`${attr}=(["']?)([^"'>\\s]+)\\1`, "i");
             const match = node.value.match(regex);
             if (!match) continue;
 
