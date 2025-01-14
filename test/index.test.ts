@@ -203,6 +203,8 @@ it("transform links inside html tags", async () => {
     <a href="https://example.com">link external</a>
     <a href="#anchor">link anchor</a>
     <img src="./path/to/file.png" alt="image">
+    <img src="https://example.com/image.png" alt="image external">
+    <img src="/file.png" alt="image png">
     <video src="./path/to/file.mp4"></video>
   `;
 
@@ -211,4 +213,35 @@ it("transform links inside html tags", async () => {
   });
 
   expect(result.toString()).toMatchSnapshot();
+});
+
+it("transform html tags inside html tags", async () => {
+  const input = dedent`
+    <img src="./assets/images/screenshot1.png" alt="Screenshot 1" width="600">
+    <img src="/assets/images/banner.jpg" alt="Banner" width="800">
+    <img src="https://example.com/images/team.jpg" alt="Team Photo">
+
+    <video width="720" height="480" controls>
+      <source src="./assets/videos/tutorial.mp4" type="video/mp4">
+      <source src="/assets/videos/tutorial.webm" type="video/webm">
+      Your browser does not support the video tag.
+    </video>
+  `;
+
+  const result = await runRemark(input, {
+    baseUrl: "https://luxass.dev",
+  });
+
+  expect(result.toString()).toMatchInlineSnapshot(dedent`
+    "<img src="https://luxass.dev/assets/images/screenshot1.png" alt="Screenshot 1" width="600">
+    <img src="https://luxass.dev/assets/images/banner.jpg" alt="Banner" width="800">
+    <img src="https://example.com/images/team.jpg" alt="Team Photo">
+
+    <video width="720" height="480" controls>
+      <source src="https://luxass.dev/assets/videos/tutorial.mp4" type="video/mp4">
+      <source src="https://luxass.dev/assets/videos/tutorial.webm" type="video/webm">
+      Your browser does not support the video tag.
+    </video>
+    "
+  `);
 });

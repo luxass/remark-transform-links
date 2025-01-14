@@ -62,22 +62,36 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
         }
 
         if (node.type === "html") {
-          const tagName = node.value.match(/<(\w+)/)?.[1]?.toLowerCase() as Tag;
-          if (!tagName || !TAG_ATTRIBUTES[tagName]) return;
+          let value = node.value;
+          const processed = new Set<string>();
 
-          for (const attr of TAG_ATTRIBUTES[tagName]) {
-            const regex = new RegExp(`${attr}=(["']?)([^"'>\\s]+)\\1`, "i");
-            const match = node.value.match(regex);
-            if (!match) continue;
+          for (const tag of Object.keys(TAG_ATTRIBUTES) as Tag[]) {
+            const tagRegex = new RegExp(`<${tag}[^>]+>`, "gi");
+            const tagMatches = value.matchAll(tagRegex);
 
-            const [, quote, url] = match;
-            if (!url || isURL(url) || url.startsWith("#")) {
-              continue;
+            for (const tagMatch of tagMatches) {
+              const tagContent = tagMatch[0];
+              if (processed.has(tagContent)) continue;
+
+              for (const attr of TAG_ATTRIBUTES[tag]) {
+                const attrRegex = new RegExp(`${attr}=(["']?)([^"'>\\s]+)\\1`, "i");
+                const match = tagContent.match(attrRegex);
+                if (!match) continue;
+
+                const [, quote, url] = match;
+                if (!url || isURL(url) || url.startsWith("#")) {
+                  continue;
+                }
+
+                const transformedUrl = joinURL(getBaseUrl(url, `html_${tag}`), url);
+                const newTagContent = tagContent.replace(attrRegex, `${attr}=${quote}${transformedUrl}${quote}`);
+                value = value.replace(tagContent, newTagContent);
+                processed.add(newTagContent);
+              }
             }
-
-            const transformedUrl = joinURL(getBaseUrl(url, `html_${tagName}`), url);
-            node.value = node.value.replace(regex, `${attr}=${quote}${transformedUrl}${quote}`);
           }
+
+          node.value = value;
           return;
         }
 
