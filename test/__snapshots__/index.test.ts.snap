@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`sanitize html tags 1`] = `
+"# Hello World
+
+<a href="https://luxass.dev/javascript:alert('xss')">link</a> <a href="https://luxass.dev/data:text/html;base64,PHNjcmlwdD5hbGVydCgnaGVsbG8nKTwvc2NyaXB0Pg==">link</a> <img src="https://luxass.dev/javascript:alert('xss')" alt="image"> <video src="https://luxass.dev/javascript:alert('xss')"></video>
+"
+`;
+
+exports[`transform links inside html tags 1`] = `
+"# Hello World
+
+<a href="https://luxass.dev/path/to/file.md">link</a> <a href="https://example.com">link external</a> <a href="#anchor">link anchor</a> <img src="https://luxass.dev/path/to/file.png" alt="image"> <video src="https://luxass.dev/path/to/file.mp4"></video>
+"
+`;
