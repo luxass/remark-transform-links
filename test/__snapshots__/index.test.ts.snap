@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`transform links inside html tags 1`] = `
+"# Hello World
+
+<a href="https://luxass.dev/path/to/file.md">link</a> <a href="https://example.com">link external</a> <a href="#anchor">link anchor</a> <img src="https://luxass.dev/path/to/file.png" alt="image"> <video src="https://luxass.dev/path/to/file.mp4"></video>
+"
+`;

@@ -1,7 +1,7 @@
 {
-  "name": "remark-transform-relative-links",
+  "name": "remark-transform-links",
   "version": "0.0.0",
-  "description": "transform relative links with remark",
+  "description": "transform links with remark",
   "type": "module",
   "author": {
     "name": "Lucas Nørgård",
@@ -10,10 +10,10 @@
   },
   "packageManager": "pnpm@9.15.4",
   "license": "MIT",
-  "homepage": "https://github.com/luxass/remark-transform-relative-links",
-  "repository": "https://github.com/luxass/remark-transform-relative-links",
+  "homepage": "https://github.com/luxass/remark-transform-links",
+  "repository": "https://github.com/luxass/remark-transform-links",
   "bugs": {
-    "url": "https://github.com/luxass/remark-transform-relative-links/issues"
+    "url": "https://github.com/luxass/remark-transform-links/issues"
   },
   "keywords": [
     "remark",
@@ -48,8 +48,13 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
+  "peerDependencies": {
+    "remark": "^15.0.1"
+  },
   "dependencies": {
+    "mdast-util-definitions": "^6.0.0",
     "mdast-util-to-string": "^4.0.0",
+    "ufo": "^1.5.4",
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
@@ -58,9 +63,11 @@
     "@types/node": "^18.19.68",
     "eslint": "^9.18.0",
     "eslint-plugin-format": "^1.0.1",
+    "remark": "^15.0.1",
     "tsup": "^8.3.5",
     "typescript": "^5.7.3",
     "unified": "^11.0.5",
-    "vfile": "6.0.3"
+    "vfile": "6.0.3",
+    "vitest": "^2.1.8"
   }
 }
