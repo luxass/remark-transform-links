@@ -5,6 +5,9 @@ import { joinURL } from "ufo";
 import { visit } from "unist-util-visit";
 
 export interface Options {
+  /**
+   * The base URL to prepand to links.
+   */
   baseUrl: string | ((path: string) => string);
 }
 
@@ -18,7 +21,11 @@ const TAG_ATTRIBUTES: Record<string, string[]> = {
 };
 
 function isURL(url: string): boolean {
-  return /^(https?:|mailto:|tel:|ftp:)/i.test(url);
+  if (url.startsWith("http://") || url.startsWith("https://")) return true;
+  if (url.startsWith("mailto:") || url.startsWith("tel:")) return true;
+  if (url.startsWith("ftp://") || url.startsWith("sftp://")) return true;
+
+  return false;
 }
 
 const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
@@ -43,7 +50,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
         }
 
         if (node.type === "html") {
-          const tagName = node.value.match(/<(\w+)/i)?.[1]?.toLowerCase();
+          const tagName = node.value.match(/<(\w+)/)?.[1]?.toLowerCase();
           if (!tagName || !TAG_ATTRIBUTES[tagName]) return;
 
           for (const attr of TAG_ATTRIBUTES[tagName]) {
