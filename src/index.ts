@@ -4,14 +4,20 @@ import { definitions } from "mdast-util-definitions";
 import { joinURL } from "ufo";
 import { visit } from "unist-util-visit";
 
+export type LinkType = "image" | "link" | `html_${Tag}`;
+
+export type BaseURLFn = (path: string, type: LinkType) => string;
+
 export interface Options {
   /**
    * The base URL to prepand to links.
    */
-  baseUrl: string | ((path: string) => string);
+  baseUrl: string | BaseURLFn;
 }
 
-const TAG_ATTRIBUTES: Record<string, string[]> = {
+export type Tag = "a" | "img" | "video" | "source" | "iframe" | "link";
+
+const TAG_ATTRIBUTES: Record<Tag, string[]> = {
   a: ["href"],
   img: ["src"],
   video: ["src", "poster"],
@@ -33,9 +39,9 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
     throw new Error("baseUrl must be a string or a function");
   }
 
-  const getBaseUrl = (url: string): string =>
+  const getBaseUrl = (url: string, linkType: LinkType): string =>
     typeof options.baseUrl === "function"
-      ? options.baseUrl(url)
+      ? options.baseUrl(url, linkType)
       : options.baseUrl;
 
   return (tree) => {
@@ -56,7 +62,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
         }
 
         if (node.type === "html") {
-          const tagName = node.value.match(/<(\w+)/)?.[1]?.toLowerCase();
+          const tagName = node.value.match(/<(\w+)/)?.[1]?.toLowerCase() as Tag;
           if (!tagName || !TAG_ATTRIBUTES[tagName]) return;
 
           for (const attr of TAG_ATTRIBUTES[tagName]) {
@@ -69,7 +75,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
               continue;
             }
 
-            const transformedUrl = joinURL(getBaseUrl(url), url);
+            const transformedUrl = joinURL(getBaseUrl(url, `html_${tagName}`), url);
             node.value = node.value.replace(regex, `${attr}=${quote}${transformedUrl}${quote}`);
           }
           return;
@@ -83,7 +89,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
             return;
           }
 
-          definition.url = joinURL(getBaseUrl(definition.url), definition.url);
+          definition.url = joinURL(getBaseUrl(definition.url, node.type === "imageReference" ? "image" : "link"), definition.url);
           return;
         }
 
@@ -93,7 +99,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
           return;
         }
 
-        node.url = joinURL(getBaseUrl(url), url);
+        node.url = joinURL(getBaseUrl(url, node.type === "image" ? "image" : "link"), url);
       },
     );
   };
