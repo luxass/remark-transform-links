@@ -32,6 +32,12 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
   if (!options || (typeof options.baseUrl !== "string" && typeof options.baseUrl !== "function")) {
     throw new Error("baseUrl must be a string or a function");
   }
+
+  const getBaseUrl = (url: string): string =>
+    typeof options.baseUrl === "function"
+      ? options.baseUrl(url)
+      : options.baseUrl;
+
   return (tree) => {
     const define = definitions(tree);
 
@@ -63,11 +69,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
               continue;
             }
 
-            const baseUrl
-              = typeof options.baseUrl === "function"
-                ? options.baseUrl(url)
-                : options.baseUrl;
-            const transformedUrl = joinURL(baseUrl, url);
+            const transformedUrl = joinURL(getBaseUrl(url), url);
             node.value = node.value.replace(regex, `${attr}=${quote}${transformedUrl}${quote}`);
           }
           return;
@@ -81,12 +83,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
             return;
           }
 
-          const baseUrl
-            = typeof options.baseUrl === "function"
-              ? options.baseUrl(definition.url)
-              : options.baseUrl;
-
-          definition.url = joinURL(baseUrl, definition.url);
+          definition.url = joinURL(getBaseUrl(definition.url), definition.url);
           return;
         }
 
@@ -96,12 +93,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
           return;
         }
 
-        const baseUrl
-          = typeof options.baseUrl === "function"
-            ? options.baseUrl(url)
-            : options.baseUrl;
-
-        node.url = joinURL(baseUrl, url);
+        node.url = joinURL(getBaseUrl(url), url);
       },
     );
   };
