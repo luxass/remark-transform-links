@@ -103,7 +103,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
             return;
           }
 
-          if ((node.type === "linkReference" && definition.url.startsWith("#")) || (node.type === "imageReference" && definition.url.startsWith("data:") && definition.url.startsWith("#"))) {
+          if ((node.type === "linkReference" && definition.url.startsWith("#")) || (node.type === "imageReference" && (definition.url.startsWith("data:") || definition.url.startsWith("#")))) {
             return;
           }
 
@@ -125,7 +125,7 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
           return;
         }
 
-        if ((node.type === "link" && url.startsWith("#")) || (node.type === "image" && url.startsWith("data:") && url.startsWith("#"))) {
+        if ((node.type === "link" && url.startsWith("#")) || (node.type === "image" && (url.startsWith("data:") || url.startsWith("#")))) {
           return;
         }
 

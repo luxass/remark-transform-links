@@ -6,7 +6,7 @@ async function runRemark(input: string, options: Options) {
   return remark().use(remarkTransformLinks, options).process(input);
 }
 
-export function dedent(strings: TemplateStringsArray, ...values: any[]): string {
+function dedent(strings: TemplateStringsArray, ...values: any[]): string {
   const raw = strings.raw.reduce((result, str, i) => result + str + (values[i] || ""), "");
 
   const lines = raw.split("\n");
@@ -145,7 +145,7 @@ it("transform image links", async () => {
 
     ![image](https://luxass.dev/path/to/file.md)
     ![image external](https://example.com)
-    ![image anchor](https://luxass.dev/#anchor)
+    ![image anchor](#anchor)
     ![image mailto](mailto:example@example.com)
     ![image absolute](https://luxass.dev/path/to/file.md)
     "
@@ -186,7 +186,7 @@ it("transform image references", async () => {
 
     [image external]: https://example.com
 
-    [image anchor]: https://luxass.dev/#anchor
+    [image anchor]: #anchor
 
     [image mailto]: mailto:example@example.com
 
