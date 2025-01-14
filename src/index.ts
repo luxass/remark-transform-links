@@ -8,9 +8,23 @@ export interface Options {
   baseUrl: string | ((path: string) => string);
 }
 
-const ALLOWED_TAG_NAMES = ["a", "video", "img"];
+const TAG_ATTRIBUTES: Record<string, string[]> = {
+  a: ["href"],
+  img: ["src"],
+  video: ["src", "poster"],
+  source: ["src"],
+  iframe: ["src"],
+  link: ["href"],
+};
+
+function isURL(url: string): boolean {
+  return /^https?:|mailto:|tel:|ftp:/i.test(url);
+}
 
 const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
+  if (!options || (typeof options.baseUrl !== "string" && typeof options.baseUrl !== "function")) {
+    throw new Error("baseUrl must be a string or a function");
+  }
   return (tree) => {
     const define = definitions(tree);
 
@@ -29,81 +43,34 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
         }
 
         if (node.type === "html") {
-          // filter non a, video and image tags
           const tagName = node.value.match(/<(\w+)/)?.[1];
+          if (!tagName || !TAG_ATTRIBUTES[tagName]) return;
 
-          if (!tagName || !ALLOWED_TAG_NAMES.includes(tagName)) return;
+          for (const attr of TAG_ATTRIBUTES[tagName]) {
+            const regex = new RegExp(`${attr}=(["'])([^"']+)\\1`, "i");
+            const match = node.value.match(regex);
+            if (!match) continue;
 
-          if (tagName === "a") {
-            const url = node.value.match(/href="([^"]+)"/)?.[1];
-            if (!url) return;
-
-            if (
-              url.startsWith("http://")
-              || url.startsWith("https://")
-              || url.startsWith("mailto:")
-            ) {
-              return;
-            }
-
-            if (url.startsWith("#")) {
-              return;
+            const [, quote, url] = match;
+            if (!url || isURL(url) || url.startsWith("#")) {
+              continue;
             }
 
             const baseUrl
               = typeof options.baseUrl === "function"
                 ? options.baseUrl(url)
                 : options.baseUrl;
-            node.value = node.value.replace(
-              /href="([^"]+)"/,
-              `href="${joinURL(baseUrl, url)}"`,
-            );
+            const transformedUrl = joinURL(baseUrl, url);
+            node.value = node.value.replace(regex, `${attr}=${quote}${transformedUrl}${quote}`);
           }
-
-          if (tagName === "video" || tagName === "img") {
-            const src = node.value.match(/src="([^"]+)"/)?.[1];
-            if (!src) return;
-
-            if (
-              src.startsWith("http://")
-              || src.startsWith("https://")
-              || src.startsWith("mailto:")
-            ) {
-              return;
-            }
-
-            if (src.startsWith("#")) {
-              return;
-            }
-
-            const baseUrl
-              = typeof options.baseUrl === "function"
-                ? options.baseUrl(src)
-                : options.baseUrl;
-
-            node.value = node.value.replace(
-              /src="([^"]+)"/,
-              `src="${joinURL(baseUrl, src)}"`,
-            );
-          }
-
           return;
         }
 
         if (node.type === "linkReference" || node.type === "imageReference") {
           const definition = define(node.identifier);
-
           if (!definition) return;
 
-          if (
-            definition.url.startsWith("http://")
-            || definition.url.startsWith("https://")
-            || definition.url.startsWith("mailto:")
-          ) {
-            return;
-          }
-
-          if ((node.type === "linkReference" && definition.url.startsWith("#")) || (node.type === "imageReference" && (definition.url.startsWith("data:") || definition.url.startsWith("#")))) {
+          if (isURL(definition.url) || definition.url.startsWith("#") || definition.url.startsWith("data:")) {
             return;
           }
 
@@ -111,21 +78,14 @@ const remarkTransformLinks: Plugin<Options[], Root> = (options) => {
             = typeof options.baseUrl === "function"
               ? options.baseUrl(definition.url)
               : options.baseUrl;
+
           definition.url = joinURL(baseUrl, definition.url);
           return;
         }
 
         const url = node.url;
 
-        if (
-          url.startsWith("http://")
-          || url.startsWith("https://")
-          || url.startsWith("mailto:")
-        ) {
-          return;
-        }
-
-        if ((node.type === "link" && url.startsWith("#")) || (node.type === "image" && (url.startsWith("data:") || url.startsWith("#")))) {
+        if (isURL(url) || url.startsWith("#") || url.startsWith("data:")) {
           return;
         }
 
