@@ -145,7 +145,7 @@ it("transform image links", async () => {
 
     ![image](https://luxass.dev/path/to/file.md)
     ![image external](https://example.com)
-    ![image anchor](#anchor)
+    ![image anchor](https://luxass.dev/#anchor)
     ![image mailto](mailto:example@example.com)
     ![image absolute](https://luxass.dev/path/to/file.md)
     "
@@ -186,7 +186,7 @@ it("transform image references", async () => {
 
     [image external]: https://example.com
 
-    [image anchor]: #anchor
+    [image anchor]: https://luxass.dev/#anchor
 
     [image mailto]: mailto:example@example.com
 
