@@ -36,7 +36,7 @@ console.log(result.toString());
 
 const result2 = await remark()
   .use(remarkTransformLinks, {
-    baseUrl(path) {
+    baseUrl: (path) => {
       if (path.startsWith("/resource.html")) {
         return `https://example.com/market`;
       }
