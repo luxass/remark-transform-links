@@ -18,16 +18,40 @@ import { remark } from "remark";
 import remarkTransformLinks from "remark-transform-links";
 
 const markdown = `
-[Relative Link](/path/to/resource)
-![Relative Image](/path/to/image.png)
+[Relative Link](/resource.html)
+![Relative Image](./image.png)
 <a href="/another/path">Link</a>
 `;
 
-const result = remark()
+const result = await remark()
   .use(remarkTransformLinks, { baseUrl: "https://example.com" })
   .process(markdown);
 
 console.log(result.toString());
+
+// Output:
+// [Relative Link](https://example.com/resource.html)
+// ![Relative Image](https://example.com/image.png)
+// <a href="https://example.com/another/path">Link</a>
+
+const result2 = await remark()
+  .use(remarkTransformLinks, {
+    baseUrl: (path) => {
+      if (path.startsWith("/resource.html")) {
+        return `https://example.com/market/${path}`;
+      }
+
+      return `https://example.com`;
+    }
+  })
+  .process(markdown);
+
+console.log(result2.toString());
+
+// Output:
+// [Relative Link](https://example.com/market/resource.html)
+// ![Relative Image](https://example.com/image.png)
+// <a href="https://example.com/another/path">Link</a>
 ```
 
 ## 📄 License
