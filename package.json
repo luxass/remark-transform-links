@@ -60,7 +60,7 @@
   "devDependencies": {
     "@luxass/eslint-config": "^4.15.0",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^18.19.68",
+    "@types/node": "^22.0.0",
     "eslint": "^9.19.0",
     "eslint-plugin-format": "^1.0.1",
     "remark": "^15.0.1",
