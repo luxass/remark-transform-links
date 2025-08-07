@@ -1,6 +1,7 @@
+import type { Options } from "../src";
 import { remark } from "remark";
 import { expect, it } from "vitest";
-import remarkTransformLinks, { type Options } from "../src";
+import remarkTransformLinks from "../src";
 
 async function runRemark(input: string, options: Options) {
   return remark().use(remarkTransformLinks, options).process(input);
