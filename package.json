@@ -8,7 +8,7 @@
     "email": "lucasnrgaard@gmail.com",
     "url": "https://luxass.dev"
   },
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "license": "MIT",
   "homepage": "https://github.com/luxass/remark-transform-links",
   "repository": "https://github.com/luxass/remark-transform-links",
@@ -54,20 +54,20 @@
   "dependencies": {
     "mdast-util-definitions": "^6.0.0",
     "mdast-util-to-string": "^4.0.0",
-    "ufo": "^1.5.4",
+    "ufo": "^1.6.1",
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
-    "@luxass/eslint-config": "^4.15.0",
+    "@luxass/eslint-config": "^5.2.5",
     "@types/mdast": "^4.0.4",
     "@types/node": "^22.0.0",
-    "eslint": "^9.19.0",
+    "eslint": "^9.32.0",
     "eslint-plugin-format": "^1.0.1",
     "remark": "^15.0.1",
-    "tsup": "^8.3.6",
-    "typescript": "^5.7.3",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
     "unified": "^11.0.5",
     "vfile": "6.0.3",
-    "vitest": "^3.0.5"
+    "vitest": "^3.2.4"
   }
 }
