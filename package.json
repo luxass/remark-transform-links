@@ -49,22 +49,22 @@
     "remark": "^15.0.1"
   },
   "dependencies": {
-    "mdast-util-definitions": "^6.0.0",
-    "mdast-util-to-string": "^4.0.0",
-    "ufo": "^1.6.1",
-    "unist-util-visit": "^5.0.0"
+    "mdast-util-definitions": "6.0.0",
+    "mdast-util-to-string": "4.0.0",
+    "ufo": "1.6.1",
+    "unist-util-visit": "5.0.0"
   },
   "devDependencies": {
-    "@luxass/eslint-config": "^5.2.5",
-    "@types/mdast": "^4.0.4",
-    "@types/node": "^22.0.0",
+    "@luxass/eslint-config": "5.2.5",
+    "@types/mdast": "4.0.4",
+    "@types/node": "22.16.5",
     "eslint": "^9.32.0",
     "eslint-plugin-format": "^1.0.1",
-    "publint": "^0.3.12",
+    "publint": "0.3.12",
     "remark": "15.0.1",
-    "tsdown": "^0.13.3",
-    "typescript": "^5.9.2",
-    "unified": "^11.0.5",
+    "tsdown": "0.13.3",
+    "typescript": "5.9.2",
+    "unified": "11.0.5",
     "vfile": "6.0.3",
     "vitest": "3.2.4"
   }
