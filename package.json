@@ -63,7 +63,7 @@
     "publint": "0.3.12",
     "remark": "15.0.1",
     "tsdown": "0.13.3",
-    "typescript": "5.9.2",
+    "typescript": "6.0.3",
     "unified": "11.0.5",
     "vfile": "6.0.3",
     "vitest": "3.2.4"
